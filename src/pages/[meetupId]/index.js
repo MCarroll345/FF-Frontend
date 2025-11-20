@@ -1,5 +1,4 @@
 import MeetupDetail from '../../components/meetups/MeetupDetail'
-import { useRouter } from 'next/router';
 
 function MeetupDetails() {
     return (
