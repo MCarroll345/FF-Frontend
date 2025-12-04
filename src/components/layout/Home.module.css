@@ -1,0 +1,15 @@
+
+.content {
+  flex: 1;
+  padding-bottom: 40px;
+}
+
+.footer {
+  padding: 24px 0;
+  text-align: center;
+  background: #c45cc4;
+  color: white;
+  width: 100%;
+  margin-top: auto;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
