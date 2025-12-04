@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import '../styles/globals.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Appbar from '../components/layout/Appbar';
-import Login from '../components/layout/Login';
 import Home from '../components/layout/Home';
 
 function App() {
@@ -21,7 +20,6 @@ function App() {
       <Appbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
