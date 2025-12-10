@@ -1,35 +1,29 @@
-// src/services/api.js
-import API_URL from '../config/api';
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-export const fetchShirts = async () => {
-  try {
-    const response = await fetch(`${API_URL}/shirts`);
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching topics:', error);
-    throw error;
-  }
-};
+function api() {
 
-// Add other API calls as needed
-export const createTopic = async (topicData) => {
-  try {
-    const response = await fetch(`${API_URL}/topics`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(topicData),
-    });
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error creating topic:', error);
-    throw error;
-  }
-};
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    useEffect(() => {
+        // Make GET request to fetch data
+        axios
+            .get("http://localhost:8000/shirts/get")
+            .then((response) => {
+                console.log(response);
+                setData(response.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
+    return data;
+}
+
+export default api;
