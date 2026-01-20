@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react'
 import classes from './Home.module.css'
 import ImageProfile from './ImageProfile';
-import axios from 'axios'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Button from '../generic/Button'
-import api from '../../services/api';
 
 function Home() {
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const aws_clothes = "ac88076883d004ce280d5f74a11363c1-321421777.eu-west-1.elb.amazonaws.com"
+  const [clothes, setClothes] = useState([]);
   const settings = {
       infinite: true,
       dots: true,
@@ -24,24 +19,27 @@ function Home() {
   };
 
   useEffect(() => {
-    // Make GET request to fetch data
-    axios
-        .get("http://localhost:8000/shirts/get")
-        .then((response) => {
-            console.log(response);
-            setData(response.data);
-            setLoading(false);
-        })
-        .catch((err) => {
-            setError(err.message);
-            setLoading(false);
-        });
+    fetchClothes();
   }, []);
 
-  const tempdata = api();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const fetchClothes = async () => {
+    try {
+      const res = await fetch(
+        `http://${aws_clothes}:8000/shirts/get`
+      );
+
+      const text = await res.text();
+      const data = JSON.parse(text);
+
+      if (!res.ok) throw new Error(data.detail || text);
+
+      setProjects(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error("Error fetching clothes:", e);
+      setClothes([]);
+    }
+  };
 
   return (
     <div className={classes.pageContainer}>
@@ -50,7 +48,7 @@ function Home() {
           </div>
           <div className="imgslider">
               <Slider {...settings}>
-                {tempdata.map((post) => (
+                {clothes.map((post) => (
                   <ImageProfile
                     id={post.id}
                     img_url={post.img_url}
