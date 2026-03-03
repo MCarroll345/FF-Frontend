@@ -1,29 +1,21 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+const aws_clothes = 'localhost';
 
-function api() {
+async function api(props) {
+  const res = await fetch(`http://${aws_clothes}:8000/${props}/get`);
+  const text = await res.text();
 
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    data = text;
+  }
 
+  if (!res.ok) {
+    throw new Error((data && data.detail) || text);
+  }
 
-    useEffect(() => {
-        // Make GET request to fetch data
-        axios
-            .get("http://localhost:8000/shirts/get")
-            .then((response) => {
-                console.log(response);
-                setData(response.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, []);
-
-    return data;
+  return Array.isArray(data) ? data : [];
 }
 
 export default api;
