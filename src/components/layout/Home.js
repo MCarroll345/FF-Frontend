@@ -4,14 +4,16 @@ import ImageProfile from './ImageProfile';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import api from '../../services/api';
 
 function Home() {
-  const aws_clothes = "ac88076883d004ce280d5f74a11363c1-321421777.eu-west-1.elb.amazonaws.com"
-  const [clothes, setClothes] = useState([]);
+  const [shirts, setShirts] = useState([]);
+  const [dresses, setDresses] = useState([]);
+  const [shoes, setShoes] = useState([]);
   const settings = {
       infinite: true,
       dots: true,
-      slidesToShow: 2,
+      slidesToShow: 5,
       slidesToScroll: 1,
       lazyLoad: true,
       autoplay: true,
@@ -19,36 +21,72 @@ function Home() {
   };
 
   useEffect(() => {
-    fetchClothes();
+    fetchShirts();
+    fetchDresses();
+    fetchShoes();
   }, []);
 
 
-  const fetchClothes = async () => {
+  const fetchShirts = async () => {
     try {
-      const res = await fetch(
-        `http://${aws_clothes}:8000/shirts/get`
-      );
-
-      const text = await res.text();
-      const data = JSON.parse(text);
-
-      if (!res.ok) throw new Error(data.detail || text);
-
-      setProjects(Array.isArray(data) ? data : []);
+      const data = await api('shirts');
+      setShirts(data);
     } catch (e) {
-      console.error("Error fetching clothes:", e);
-      setClothes([]);
+      console.error("Error fetching shirts:", e);
+      setShirts([]);
+    }
+  };
+
+  const fetchDresses = async () => {
+    try {
+      const data = await api('dresses');
+      setDresses(data);
+    } catch (e) {
+      console.error("Error fetching dresses:", e);
+      setDresses([]);
+    }
+  };
+
+  const fetchShoes = async () => {
+    try {
+      const data = await api('shoes');
+      setShoes(data);
+    } catch (e) {
+      console.error("Error fetching shoes:", e);
+      setShoes([]);
     }
   };
 
   return (
     <div className={classes.pageContainer}>
           <div className="tag">
-              <h1>Clothes collection</h1>
+              <h1>Shirts</h1>
           </div>
           <div className="imgslider">
               <Slider {...settings}>
-                {clothes.map((post) => (
+                {shirts.map((post) => (
+                  <ImageProfile
+                    id={post.id}
+                    img_url={post.img_url}
+                    name={post.name}
+                    brand={post.brand}
+                  />
+                ))}
+              </Slider>
+              <h1>Dresses</h1>
+              <Slider {...settings}>
+                {dresses.map((post) => (
+                  <ImageProfile
+                    id={post.id}
+                    img_url={post.img_url}
+                    name={post.name}
+                    brand={post.brand}
+                  />
+                ))}
+              </Slider>
+              <h1>Shoes</h1>
+              <Slider {...settings}>
+                {shoes.map((post) => (
                   <ImageProfile
                     id={post.id}
                     img_url={post.img_url}
