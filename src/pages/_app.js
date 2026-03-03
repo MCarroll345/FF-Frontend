@@ -1,28 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/globals.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Appbar from '../components/layout/Appbar';
-import Home from '../components/layout/Home';
+import '../styles/globals.css'
+import Layout from '../components/layout/Layout'
+import { GlobalContextProvider } from './store/globalContext'
 
-function App() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  if (!mounted) {
-    return null;
-  }
-  
+function MyApp({ Component, pageProps }) {
   return (
-    <Router>
-      <Appbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
+    <GlobalContextProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </GlobalContextProvider>
   );
 }
 
-export default App;
+export default MyApp
