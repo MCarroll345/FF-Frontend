@@ -1,172 +1,172 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import classes from '../../styles/recom.module.css';
 
-import { useContext } from 'react';
-import GlobalContext from "../../pages/store/globalContext"
+const ATTR_LIST = [
+  'light',
+  'dark',
+  'bright',
+  'warm',
+  'cool',
+  'lightweight',
+  'fancy',
+  'casual',
+  'business',
+  'lounge',
+  'evening',
+  'minimalist',
+  'vintage',
+  'modern',
+  'soft',
+  'comfortable',
+  'layerable',
+];
 
-function ProjectsPage() {
-  const globalCtx = useContext(GlobalContext)
-  const username = globalCtx.theGlobalObject.username;
-  const [projects, setProjects] = useState([]);
-  const [userID, setUserID] = useState(null);
-  const [projectName, setProjectName] = useState('');
-  const [projectDescription, setProjectDescription] = useState('');
+const MIN_ATTR = 4;
 
-  useEffect(() => {
-    if (!username) return;
+function normalizeImageSrc(value) {
+  if (typeof value !== 'string') {
+    return '';
+  }
+  return value.trim().replace(/^['"]+|['"]+$/g, '');
+}
 
-    const fetchUserID = async () => {
-      try {
-        // NOTE: likely /users/ not /user/
-        const res = await fetch(
-          `http://a65d0917c228c441b8b876093dfffd7e-579877813.eu-west-1.elb.amazonaws.com:8000/users/${username}`
-        );
+function RecomPage() {
+  const [recommend, setRecommend] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
-        const text = await res.text();
-        const data = JSON.parse(text);
+  const aws_recom = 'http://localhost:8000';
 
-        if (!res.ok) throw new Error(data.detail || text);
-
-        setUserID(data.id);
-      } catch (e) {
-        console.error("Error fetching user id:", e);
-        setUserID(null);
+  const handleOptionToggle = (option) => {
+    setSelectedOptions((previousSelections) => {
+      if (previousSelections.includes(option)) {
+        return previousSelections.filter((item) => item !== option);
       }
-    };
 
-    fetchUserID();
-  }, [username]);
-
-  useEffect(() => {
-    if (!userID) return;
-
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch(
-          `http://a2090d8f11ab942f0897c2471569b105-1957319447.eu-west-1.elb.amazonaws.com:8002/projects/${userID}`
-        );
-
-        const text = await res.text();
-        const data = JSON.parse(text);
-
-        if (!res.ok) throw new Error(data.detail || text);
-
-        setProjects(Array.isArray(data) ? data : []);
-      } catch (e) {
-        console.error("Error fetching projects:", e);
-        setProjects([]);
+      if (previousSelections.length >= MIN_ATTR) {
+        return previousSelections;
       }
-    };
 
-    fetchProjects();
-  }, [userID]);
+      return [...previousSelections, option];
+    });
+  };
 
-
-
-  const createProject = async () => {
-    if (!projectName || !projectDescription) {
-      alert('Fill in both project name and description');
+  const getRecommendations = async () => {
+    if (selectedOptions.length !== MIN_ATTR) {
+      alert(`Please choose exactly ${MIN_ATTR} options before getting recommendations.`);
       return;
     }
 
+    const [c1, c2, c3, c4] = selectedOptions.map((option) => encodeURIComponent(option));
+
     try {
-      const response = await fetch('http://a2090d8f11ab942f0897c2471569b105-1957319447.eu-west-1.elb.amazonaws.com:8002/projects/', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: projectName,
-          description: projectDescription,
-          owner_id: userID
-        })
-      });
-      
-      if (response.ok) {
-        setProjectName('');
-        setProjectDescription('');
-        fetchProjects();
-        alert('Project created successfully!');
-      } else {
-        const result = await response.json();
-        alert('Error creating project: ' + result.detail);
+      const response = await fetch(`${aws_recom}/${c1}/${c2}/${c3}/${c4}/getrecom`);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to fetch recommendations');
       }
+
+      setRecommend(data);
     } catch (error) {
-      console.error('Error creating project:', error);
-      alert('Network error creating project');
+      console.error('Error getting recommendations:', error);
+      alert('Network error getting recommendations');
     }
   };
 
-  const deleteProject = async (projectId) => {
-    if (!confirm('Delete project and all its entries?')) return;
+  const recommendationItems = [1, 2, 3, 4]
+    .map((index) => {
+      const name = recommend?.[`name${index}`];
+      const image = normalizeImageSrc(
+        recommend?.[`image${index}`]
+        || recommend?.[`img_url${index}`]
+        || recommend?.[`img${index}`]
+        || recommend?.[`url${index}`]
+      );
 
-    try {
-      const response = await fetch(`http://a2090d8f11ab942f0897c2471569b105-1957319447.eu-west-1.elb.amazonaws.com:8002/project/${projectId}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) {
-        fetchProjects();
+      if (!name && !image) {
+        return null;
       }
-    } catch (error) {
-      console.error('Error deleting project:', error);
-    }
-  };
 
-  const deleteAllUserProjects = async () => {
-    if (!confirm('Delete ALL your projects and entries?')) return;
-
-    try {
-      const response = await fetch(`http://a2090d8f11ab942f0897c2471569b105-1957319447.eu-west-1.elb.amazonaws.com:8002/user/projects/${userID}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) {
-        fetchProjects();
-      }
-    } catch (error) {
-      console.error('Error deleting all projects:', error);
-    }
-  };
+      return {
+        id: index,
+        name: name || `Look ${index}`,
+        image,
+      };
+    })
+    .filter(Boolean);
 
   return (
     <div className={classes.container}>
-      <h1>Project Management</h1>
-      
-        <h2>Create Project</h2>
-        <div className={classes.inpt}>
-          <input
-            type="text"
-            placeholder="Project name"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Project description"
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
-          />
-          <button onClick={createProject} className={classes.createBtn}>
-            Create Project
-          </button>
-        </div>
+      <h1>Outfit Ideas</h1>
+      <p className={classes.selectionCount}>
+        Choose up to {MIN_ATTR} options. Selected: {selectedOptions.length}/{MIN_ATTR}
+      </p>
 
-        <h2>Your Projects</h2>
-        <div className={classes.projects}>
-          {projects.map(project => (
-            <div key={project.id} className={classes.project}>
-              <div>
-                <strong>{project.name}</strong>
-                <p>{project.description}</p>
+      <div className={classes.checklistGrid}>
+        {ATTR_LIST.map((option) => {
+          const isChecked = selectedOptions.includes(option);
+          const disableUnchecked = !isChecked && selectedOptions.length >= MIN_ATTR;
+
+          return (
+            <label
+              key={option}
+              className={`${classes.checklistCard} ${isChecked ? classes.checkedCard : ''} ${disableUnchecked ? classes.disabledCard : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={() => handleOptionToggle(option)}
+                disabled={disableUnchecked}
+              />
+              <span>{option}</span>
+            </label>
+          );
+        })}
+      </div>
+
+      <h2>Your Recommendations</h2>
+
+      <button
+        onClick={getRecommendations}
+        className={classes.deleteBtn}
+        disabled={selectedOptions.length !== MIN_ATTR}
+      >
+        Get Recommendations
+      </button>
+
+      <div className={classes.resultsSection}>
+        <p className={classes.resultsIntro}>
+          {recommendationItems.length > 0
+            ? 'Here is your recommended outfit combination.'
+            : 'Choose 4 options and fetch recommendations to see an outfit here.'}
+        </p>
+
+        <div className={classes.recommendationGrid}>
+          {recommendationItems.map((item) => (
+            <article key={item.id} className={classes.recommendationCard}>
+              <div className={classes.recommendationImageWrap}>
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className={classes.recommendationImage}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className={classes.imageFallback}>No image available</div>
+                )}
               </div>
-              <button onClick={() => deleteProject(project.id)} className={classes.deleteBtn}>
-                Delete
-              </button>
-            </div>
+              <div className={classes.recommendationContent}>
+                <span className={classes.recommendationLabel}>Item {item.id}</span>
+                <h3>{item.name}</h3>
+              </div>
+            </article>
           ))}
         </div>
-        <button onClick={deleteAllUserProjects} className={classes.deleteBtn}>
-          Delete All My Projects
-        </button>
+      </div>
     </div>
   );
 }
 
-export default ProjectsPage;
+export default RecomPage;
