@@ -1,20 +1,11 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState } from 'react'
 
 const GlobalContext = createContext()
 
 export function GlobalContextProvider(props) {
     const [globals, setGlobals] = useState({ aString: 'init val', count: 0, hideHamMenu: true, username: null })
 
-    useEffect(() => {
-        const savedUsername = sessionStorage.getItem('username')
-        if (savedUsername) {
-            setGlobals(prev => ({ ...prev, username: savedUsername }))
-        }
-    }, [])
-
     async function logout() {
-        const currentUsername = globals.username
-        
         try {
             await fetch('http://localhost:8000/api/auth/logout', {
                 method: 'POST',
@@ -23,7 +14,6 @@ export function GlobalContextProvider(props) {
         } catch (error) {
             console.error('Logout error:', error)
         }
-        sessionStorage.removeItem('username')
         setGlobals(prev => ({ ...prev, username: null }))
     }
 
@@ -35,11 +25,6 @@ export function GlobalContextProvider(props) {
             })
         }
         if (command.cmd == 'setUsername') {
-            if (command.newVal) {
-                sessionStorage.setItem('username', command.newVal)
-            } else {
-                sessionStorage.removeItem('username')
-            }
             setGlobals((previousGlobals) => {
                 const newGlobals = JSON.parse(JSON.stringify(previousGlobals));
                 newGlobals.username = command.newVal; return newGlobals

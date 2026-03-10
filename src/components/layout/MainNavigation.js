@@ -44,13 +44,13 @@ function MainNavigation() {
             <Link href='/'>Home</Link>
           </li>
           <li>
-            <Link href='/recom'>Time Entries</Link>
+            <Link href='/recom'>Outfit Ideas</Link>
           </li>
           <li>
-            <Link href='/recom'>Projects</Link>
+            <Link href='/recom'>Catalogue</Link>
           </li>
           <li>
-            <Link href='/recom'>Graphs</Link>
+            <Link href='/titiPage'>Titi</Link>
           </li>
           <li>
             <Link href='/recom'>Notifications</Link>
