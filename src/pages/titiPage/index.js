@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Script from 'next/script';
 import classes from '../../styles/titiPage.module.css';
 
@@ -24,7 +24,9 @@ const ATTRIBUTE_FIELDS = [
   'layerable',
 ];
 
-const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'shoes', 'dresses', 'skirts'];
+const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts'];
+
+const aws_clothes = 'http://a8a91325c14944f65a08845837e99438-1833696508.eu-west-1.elb.amazonaws.com:8001';
 
 const INITIAL_FORM = ATTRIBUTE_FIELDS.reduce(
   (form, field) => ({ ...form, [field]: '' }),
@@ -36,10 +38,41 @@ const INITIAL_FORM = ATTRIBUTE_FIELDS.reduce(
   }
 );
 
+function getAttributesPerRow(width) {
+  if (width < 700) {
+    return 1;
+  }
+
+  if (width < 1100) {
+    return 2;
+  }
+
+  return 3;
+}
+
 function TitiPage() {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [attributesPerRow, setAttributesPerRow] = useState(3);
+  const attributeRows = [];
+
+  useEffect(() => {
+    const updateAttributesPerRow = () => {
+      setAttributesPerRow(getAttributesPerRow(window.innerWidth));
+    };
+
+    updateAttributesPerRow();
+    window.addEventListener('resize', updateAttributesPerRow);
+
+    return () => {
+      window.removeEventListener('resize', updateAttributesPerRow);
+    };
+  }, []);
+
+  for (let index = 0; index < ATTRIBUTE_FIELDS.length; index += attributesPerRow) {
+    attributeRows.push(ATTRIBUTE_FIELDS.slice(index, index + attributesPerRow));
+  }
 
   const handleTextChange = (event) => {
     const { name, value } = event.target;
@@ -85,7 +118,7 @@ function TitiPage() {
     setFeedback(null);
 
     try {
-      const response = await fetch(`http://localhost:8001/${encodeURIComponent(formData.cloth.trim())}/create`, {
+      const response = await fetch(`${aws_clothes}/${encodeURIComponent(formData.cloth.trim())}/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -130,109 +163,134 @@ function TitiPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className={classes.form}>
-        <div className={classes.topFields}>
-          <label className={classes.field}>
-            <span>Cloth</span>
-            <select
-              name="cloth"
-              value={formData.cloth}
-              onChange={handleTextChange}
-            >
-              <option value="">Select cloth type</option>
-              {CLOTH_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
+      <div className={classes.contentLayout}>
+        <div className={classes.entrySection}>
+          <form onSubmit={handleSubmit} className={classes.form}>
+            <div className={classes.topFields}>
+              <label className={classes.field}>
+                <span>Cloth</span>
+                <select
+                  name="cloth"
+                  value={formData.cloth}
+                  onChange={handleTextChange}
+                >
+                  <option value="">Select cloth type</option>
+                  {CLOTH_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className={classes.field}>
-            <span>Name</span>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleTextChange}
-              placeholder="Relaxed Oxford Shirt"
-            />
-          </label>
+              <label className={classes.field}>
+                <span>Name</span>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleTextChange}
+                  placeholder="Relaxed Oxford Shirt"
+                />
+              </label>
 
-          <label className={classes.field}>
-            <span>Brand</span>
-            <input
-              type="text"
-              name="brand"
-              value={formData.brand}
-              onChange={handleTextChange}
-              placeholder="Gap"
-            />
-          </label>
+              <label className={classes.field}>
+                <span>Brand</span>
+                <input
+                  type="text"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={handleTextChange}
+                  placeholder="Gap"
+                />
+              </label>
 
-          <label className={`${classes.field} ${classes.wideField}`}>
-            <span>Image URL</span>
-            <input
-              type="url"
-              name="img_url"
-              value={formData.img_url}
-              onChange={handleTextChange}
-              placeholder="https://..."
-            />
-          </label>
+              <label className={`${classes.field} ${classes.wideField}`}>
+                <span>Image URL</span>
+                <input
+                  type="url"
+                  name="img_url"
+                  value={formData.img_url}
+                  onChange={handleTextChange}
+                  placeholder="https://..."
+                />
+              </label>
+            </div>
+
+            <div className={classes.tableWrap}>
+              <table className={classes.table}>
+                <thead>
+                  <tr>
+                    {Array.from({ length: attributesPerRow }, (_, index) => (
+                      <Fragment key={`header-${index}`}>
+                        <th>Attribute</th>
+                        <th>Value</th>
+                      </Fragment>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {attributeRows.map((row, rowIndex) => (
+                    <tr key={`row-${rowIndex}`}>
+                      {row.map((field) => (
+                        <Fragment key={field}>
+                          <th key={`${field}-label`} scope="row" className={classes.attributeName}>
+                            {field}
+                          </th>
+                          <td>
+                            <input
+                              type="number"
+                              name={field}
+                              value={formData[field]}
+                              onChange={handleCheckboxChange}
+                              step="1"
+                              required
+                            />
+                          </td>
+                        </Fragment>
+                      ))}
+                      {row.length < attributesPerRow &&
+                        Array.from({ length: attributesPerRow - row.length }, (_, index) => (
+                          <Fragment key={`empty-${rowIndex}-${index}`}>
+                            <th className={classes.emptyCell} />
+                            <td className={classes.emptyCell} />
+                          </Fragment>
+                        ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className={classes.actions}>
+              <button type="submit" className={classes.submitButton} disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create Entry'}
+              </button>
+              {feedback && (
+                <p className={feedback.type === 'success' ? classes.successMessage : classes.errorMessage}>
+                  {feedback.message}
+                </p>
+              )}
+            </div>
+          </form>
         </div>
 
-        <div className={classes.tableWrap}>
-          <table className={classes.table}>
-            <thead>
-              <tr>
-                {ATTRIBUTE_FIELDS.map((field) => (
-                  <th key={field}>{field}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {ATTRIBUTE_FIELDS.map((field) => (
-                  <td key={field}>
-                    <input
-                      type="number"
-                      name={field}
-                      value={formData[field]}
-                      onChange={handleCheckboxChange}
-                      step="1"
-                      required
-                    />
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className={classes.actions}>
-          <button type="submit" className={classes.submitButton} disabled={isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create Entry'}
-          </button>
-          {feedback && (
-            <p className={feedback.type === 'success' ? classes.successMessage : classes.errorMessage}>
-              {feedback.message}
-            </p>
-          )}
-        </div>
-      </form>
-
-      {formData.img_url && (
-        <div className={classes.previewCard}>
+        <aside className={classes.previewCard}>
           <h2>Image Preview</h2>
-          <img
-            src={formData.img_url}
-            alt={formData.name || 'Clothing preview'}
-            className={classes.previewImage}
-            referrerPolicy="no-referrer"
-          />
-        </div>
-      )}
+          {formData.img_url ? (
+            <img
+              src={formData.img_url}
+              alt={formData.name || 'Clothing preview'}
+              className={classes.previewImage}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className={classes.previewPlaceholder}>
+              Add an image URL to preview it here.
+            </div>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

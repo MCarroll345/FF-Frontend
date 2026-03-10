@@ -47,7 +47,7 @@ function MainNavigation() {
             <Link href='/recom'>Outfit Ideas</Link>
           </li>
           <li>
-            <Link href='/recom'>Catalogue</Link>
+            <Link href='/catalogue'>Catalogue</Link>
           </li>
           <li>
             <Link href='/titiPage'>Titi</Link>
