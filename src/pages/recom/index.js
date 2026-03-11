@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import classes from '../../styles/recom.module.css';
 
 const ATTR_LIST = [
@@ -59,18 +60,12 @@ function RecomPage() {
     const [c1, c2, c3, c4] = selectedOptions.map((option) => encodeURIComponent(option));
 
     try {
-      const response = await fetch(`${aws_recom}/${c1}/${c2}/${c3}/${c4}/getrecom`);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || 'Failed to fetch recommendations');
-      }
+      const { data } = await axios.get(`${aws_recom}/${c1}/${c2}/${c3}/${c4}/getrecom`);
 
       setRecommend(data);
     } catch (error) {
       console.error('Error getting recommendations:', error);
-      alert('Network error getting recommendations');
+      alert(error.response?.data?.detail || 'Network error getting recommendations');
     }
   };
 
