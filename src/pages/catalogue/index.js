@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import axios from 'axios';
 import classes from '../../components/layout/Home.module.css'
 import ImageProfile from '../../components/layout/ImageProfile';
 import Slider from "react-slick";
@@ -29,8 +30,7 @@ function Home() {
 
   const fetchShirts = async () => {
     try {
-      const res = await fetch(`${aws_clothes}/shirts/get`);
-      const data = await res.json();
+      const { data } = await axios.get(`${aws_clothes}/shirts/get`);
       setShirts(data);
     } catch (e) {
       console.error("Error fetching shirts:", e);
@@ -40,8 +40,7 @@ function Home() {
 
   const fetchDresses = async () => {
     try {
-      const res = await fetch(`${aws_clothes}/dresses/get`);
-      const data = await res.json();
+      const { data } = await axios.get(`${aws_clothes}/dresses/get`);
       setDresses(data);
     } catch (e) {
       console.error("Error fetching dresses:", e);
@@ -51,8 +50,7 @@ function Home() {
 
   const fetchShoes = async () => {
     try {
-      const res = await fetch(`${aws_clothes}/shoes/get`);
-      const data = await res.json();
+      const { data } = await axios.get(`${aws_clothes}/shoes/get`);
       setShoes(data);
     } catch (e) {
       console.error("Error fetching shoes:", e);

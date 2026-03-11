@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react'
+import axios from 'axios';
 
 const GlobalContext = createContext()
 
@@ -7,10 +8,7 @@ export function GlobalContextProvider(props) {
 
     async function logout() {
         try {
-            await fetch('http://localhost:8000/api/auth/logout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
+            await axios.post('http://localhost:8000/api/auth/logout')
         } catch (error) {
             console.error('Logout error:', error)
         }

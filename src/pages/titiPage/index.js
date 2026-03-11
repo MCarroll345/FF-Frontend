@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import Script from 'next/script';
+import axios from 'axios';
 import classes from '../../styles/titiPage.module.css';
 
 const ATTRIBUTE_FIELDS = [
@@ -118,23 +119,19 @@ function TitiPage() {
     setFeedback(null);
 
     try {
-      const response = await fetch(`${aws_clothes}/${encodeURIComponent(formData.cloth.trim())}/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        throw new Error(data?.detail || 'Failed to create entry.');
-      }
+      await axios.post(
+        `${aws_clothes}/${encodeURIComponent(formData.cloth.trim())}/create`,
+        payload
+      );
 
       setFeedback({ type: 'success', message: 'Database entry created successfully.' });
       setFormData(INITIAL_FORM);
     } catch (error) {
       console.error('Error creating clothing entry:', error);
-      setFeedback({ type: 'error', message: error.message || 'Network error creating entry.' });
+      setFeedback({
+        type: 'error',
+        message: error.response?.data?.detail || error.message || 'Network error creating entry.',
+      });
     } finally {
       setIsSubmitting(false);
     }
