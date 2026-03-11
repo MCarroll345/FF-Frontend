@@ -26,7 +26,7 @@ const ATTRIBUTE_FIELDS = [
 
 const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts'];
 
-const aws_clothes = 'http://a8a91325c14944f65a08845837e99438-1833696508.eu-west-1.elb.amazonaws.com:8001';
+const aws_clothes = 'http://ae83004f6a66d4fbe9539728e02034d9-1429621471.eu-west-1.elb.amazonaws.com:8001';
 
 const INITIAL_FORM = ATTRIBUTE_FIELDS.reduce(
   (form, field) => ({ ...form, [field]: '' }),
