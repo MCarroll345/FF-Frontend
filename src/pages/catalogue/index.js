@@ -9,7 +9,7 @@ function Home() {
   const [shirts, setShirts] = useState([]);
   const [dresses, setDresses] = useState([]);
   const [shoes, setShoes] = useState([]);
-  const aws_clothes = 'http://a8a91325c14944f65a08845837e99438-1833696508.eu-west-1.elb.amazonaws.com:8001';
+  const aws_clothes = 'http://ae83004f6a66d4fbe9539728e02034d9-1429621471.eu-west-1.elb.amazonaws.com:8001';
   const settings = {
       infinite: true,
       dots: true,
