@@ -30,7 +30,7 @@ function Home() {
 
   const fetchShirts = async () => {
     try {
-      const { data } = await axios.get(`${awsClothes}/shirts/get`);
+      const { data } = await axios.get(`/api/shirts/get`);
       setShirts(data);
     } catch (e) {
       console.error("Error fetching shirts:", e);
