@@ -32,8 +32,22 @@ const ArrowBtn = ({ onClick, direction }) => (
 
 function Home() {
   const [shirts, setShirts] = useState([]);
+  const [trousers, setTrousers] = useState([]);
+  const [jackets, setJackets] = useState([]);
   const [dresses, setDresses] = useState([]);
-  const [shoes, setShoes] = useState([]);
+  const [skirts, setSkirts] = useState([]);
+
+  useEffect(() => {
+    const fetch = async (type, setter) => {
+      try { const { data } = await axios.get(`/recom/${type}/get`); setter(data); }
+      catch (e) { setter([]); }
+    };
+    fetch('shirts', setShirts);
+    fetch('trousers', setTrousers);
+    fetch('jacket', setJackets);
+    fetch('dresses', setDresses);
+    fetch('skirts', setSkirts);
+  }, []);
 
   const settings = {
     infinite: true,
@@ -47,27 +61,6 @@ function Home() {
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 640,  settings: { slidesToShow: 2 } },
     ],
-  };
-
-  useEffect(() => {
-    fetchShirts();
-    fetchDresses();
-    fetchShoes();
-  }, []);
-
-  const fetchShirts = async () => {
-    try { const { data } = await axios.get(`/recom/shirts/get`); setShirts(data); }
-    catch (e) { setShirts([]); }
-  };
-
-  const fetchDresses = async () => {
-    try { const { data } = await axios.get(`/recom/dresses/get`); setDresses(data); }
-    catch (e) { setDresses([]); }
-  };
-
-  const fetchShoes = async () => {
-    try { const { data } = await axios.get(`/recom/shoes/get`); setShoes(data); }
-    catch (e) { setShoes([]); }
   };
 
   const Section = ({ title, items }) => (
@@ -86,8 +79,10 @@ function Home() {
   return (
     <div style={{ padding: '2rem 3rem' }}>
       <Section title="Shirts" items={shirts} />
+      <Section title="Trousers" items={trousers} />
+      <Section title="Jackets" items={jackets} />
       <Section title="Dresses" items={dresses} />
-      <Section title="Shoes" items={shoes} />
+      <Section title="Skirts" items={skirts} />
     </div>
   );
 }
