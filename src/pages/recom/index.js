@@ -60,7 +60,7 @@ function RecomPage() {
     const [c1, c2, c3, c4] = selectedOptions.map((option) => encodeURIComponent(option));
 
     try {
-      const { data } = await axios.get(`${aws_recom}/${c1}/${c2}/${c3}/${c4}/getrecom`);
+      const { data } = await axios.get(`/recom/${c1}/${c2}/${c3}/${c4}/getrecom`);
 
       setRecommend(data);
     } catch (error) {

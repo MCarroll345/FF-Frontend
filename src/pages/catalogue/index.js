@@ -30,7 +30,7 @@ function Home() {
 
   const fetchShirts = async () => {
     try {
-      const { data } = await axios.get(`/api/shirts/get`);
+      const { data } = await axios.get(`/recom/shirts/get`);
       setShirts(data);
     } catch (e) {
       console.error("Error fetching shirts:", e);
@@ -40,7 +40,7 @@ function Home() {
 
   const fetchDresses = async () => {
     try {
-      const { data } = await axios.get(`${awsClothes}/dresses/get`);
+      const { data } = await axios.get(`/recom/dresses/get`);
       setDresses(data);
     } catch (e) {
       console.error("Error fetching dresses:", e);
@@ -50,7 +50,7 @@ function Home() {
 
   const fetchShoes = async () => {
     try {
-      const { data } = await axios.get(`${awsClothes}/shoes/get`);
+      const { data } = await axios.get(`/recom/shoes/get`);
       setShoes(data);
     } catch (e) {
       console.error("Error fetching shoes:", e);
