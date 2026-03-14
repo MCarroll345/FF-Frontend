@@ -6,19 +6,47 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+const ArrowBtn = ({ onClick, direction }) => (
+  <button onClick={onClick} style={{
+    position: 'absolute',
+    [direction === 'left' ? 'left' : 'right']: '-1.5rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: 10,
+    background: 'white',
+    border: '1.5px solid rgba(196,122,196,0.4)',
+    borderRadius: '50%',
+    width: '2rem',
+    height: '2rem',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#9b4f9b',
+    fontSize: '1rem',
+    boxShadow: '0 2px 6px rgba(180,80,180,0.15)',
+  }}>
+    {direction === 'left' ? '‹' : '›'}
+  </button>
+);
+
 function Home() {
   const [shirts, setShirts] = useState([]);
   const [dresses, setDresses] = useState([]);
   const [shoes, setShoes] = useState([]);
-  const awsClothes = process.env.NEXT_PUBLIC_RECOM_AWS || '';
+
   const settings = {
-      infinite: true,
-      dots: true,
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      lazyLoad: true,
-      autoplay: true,
-      autoplaySpeed: 2000,
+    infinite: true,
+    dots: false,
+    slidesToShow: 5,
+    slidesToScroll: 2,
+    lazyLoad: true,
+    prevArrow: <ArrowBtn direction="left" />,
+    nextArrow: <ArrowBtn direction="right" />,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 640,  settings: { slidesToShow: 2 } },
+    ],
   };
 
   useEffect(() => {
@@ -27,76 +55,39 @@ function Home() {
     fetchShoes();
   }, []);
 
-
   const fetchShirts = async () => {
-    try {
-      const { data } = await axios.get(`/recom/shirts/get`);
-      setShirts(data);
-    } catch (e) {
-      console.error("Error fetching shirts:", e);
-      setShirts([]);
-    }
+    try { const { data } = await axios.get(`/recom/shirts/get`); setShirts(data); }
+    catch (e) { setShirts([]); }
   };
 
   const fetchDresses = async () => {
-    try {
-      const { data } = await axios.get(`/recom/dresses/get`);
-      setDresses(data);
-    } catch (e) {
-      console.error("Error fetching dresses:", e);
-      setDresses([]);
-    }
+    try { const { data } = await axios.get(`/recom/dresses/get`); setDresses(data); }
+    catch (e) { setDresses([]); }
   };
 
   const fetchShoes = async () => {
-    try {
-      const { data } = await axios.get(`/recom/shoes/get`);
-      setShoes(data);
-    } catch (e) {
-      console.error("Error fetching shoes:", e);
-      setShoes([]);
-    }
+    try { const { data } = await axios.get(`/recom/shoes/get`); setShoes(data); }
+    catch (e) { setShoes([]); }
   };
 
+  const Section = ({ title, items }) => (
+    <div style={{ marginBottom: '3rem' }}>
+      <h2 style={{ color: '#7a3d7a', marginBottom: '1rem' }}>{title}</h2>
+      <div style={{ position: 'relative', padding: '0 1.5rem' }}>
+        <Slider {...settings}>
+          {items.map((post) => (
+            <ImageProfile key={post.id} id={post.id} img_url={post.img_url} name={post.name} brand={post.brand} />
+          ))}
+        </Slider>
+      </div>
+    </div>
+  );
+
   return (
-    <div className={classes.pageContainer}>
-          <div className="tag">
-              <h1>Shirts</h1>
-          </div>
-          <div className="imgslider">
-              <Slider {...settings}>
-                {shirts.map((post) => (
-                  <ImageProfile
-                    id={post.id}
-                    img_url={post.img_url}
-                    name={post.name}
-                    brand={post.brand}
-                  />
-                ))}
-              </Slider>
-              <h1>Dresses</h1>
-              <Slider {...settings}>
-                {dresses.map((post) => (
-                  <ImageProfile
-                    id={post.id}
-                    img_url={post.img_url}
-                    name={post.name}
-                    brand={post.brand}
-                  />
-                ))}
-              </Slider>
-              <h1>Shoes</h1>
-              <Slider {...settings}>
-                {shoes.map((post) => (
-                  <ImageProfile
-                    id={post.id}
-                    img_url={post.img_url}
-                    name={post.name}
-                    brand={post.brand}
-                  />
-                ))}
-              </Slider>
-          </div>
+    <div style={{ padding: '2rem 3rem' }}>
+      <Section title="Shirts" items={shirts} />
+      <Section title="Dresses" items={dresses} />
+      <Section title="Shoes" items={shoes} />
     </div>
   );
 }
