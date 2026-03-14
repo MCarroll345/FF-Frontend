@@ -10,7 +10,7 @@ function Home() {
   const [shirts, setShirts] = useState([]);
   const [dresses, setDresses] = useState([]);
   const [shoes, setShoes] = useState([]);
-  const aws_clothes = 'http://ae83004f6a66d4fbe9539728e02034d9-1429621471.eu-west-1.elb.amazonaws.com:8001';
+  const awsClothes = process.env.NEXT_PUBLIC_RECOM_AWS;
   const settings = {
       infinite: true,
       dots: true,
@@ -30,7 +30,7 @@ function Home() {
 
   const fetchShirts = async () => {
     try {
-      const { data } = await axios.get(`${aws_clothes}/shirts/get`);
+      const { data } = await axios.get(`${awsClothes}/shirts/get`);
       setShirts(data);
     } catch (e) {
       console.error("Error fetching shirts:", e);
@@ -40,7 +40,7 @@ function Home() {
 
   const fetchDresses = async () => {
     try {
-      const { data } = await axios.get(`${aws_clothes}/dresses/get`);
+      const { data } = await axios.get(`${awsClothes}/dresses/get`);
       setDresses(data);
     } catch (e) {
       console.error("Error fetching dresses:", e);
@@ -50,7 +50,7 @@ function Home() {
 
   const fetchShoes = async () => {
     try {
-      const { data } = await axios.get(`${aws_clothes}/shoes/get`);
+      const { data } = await axios.get(`${awsClothes}/shoes/get`);
       setShoes(data);
     } catch (e) {
       console.error("Error fetching shoes:", e);
