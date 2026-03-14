@@ -10,7 +10,7 @@ function Home() {
   const [shirts, setShirts] = useState([]);
   const [dresses, setDresses] = useState([]);
   const [shoes, setShoes] = useState([]);
-  const awsClothes = process.env.NEXT_PUBLIC_RECOM_AWS;
+  const awsClothes = process.env.NEXT_PUBLIC_RECOM_AWS || '';
   const settings = {
       infinite: true,
       dots: true,
