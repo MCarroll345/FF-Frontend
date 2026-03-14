@@ -35,7 +35,7 @@ function RecomPage() {
   const [recommend, setRecommend] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const aws_recom = 'http://localhost:8000';
+  const aws_recom = process.env.NEXT_PUBLIC_RECOM_AWS;
 
   const handleOptionToggle = (option) => {
     setSelectedOptions((previousSelections) => {
