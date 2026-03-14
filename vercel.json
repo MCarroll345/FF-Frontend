@@ -3,6 +3,10 @@
     {
       "source": "/recom/:path*",
       "destination": "http://a816e4d2db79748a2a51b748b707b808-1278229857.eu-west-1.elb.amazonaws.com/:path*"
+    },
+    {
+      "source": "/clothes/:path*",
+      "destination": "http://a15df386a42b04be0a7b50ed571ddfc4-1560972806.eu-west-1.elb.amazonaws.com/:path*"
     }
   ]
 }
