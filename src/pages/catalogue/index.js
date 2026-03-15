@@ -36,6 +36,7 @@ function Home() {
   const [jackets, setJackets] = useState([]);
   const [dresses, setDresses] = useState([]);
   const [skirts, setSkirts] = useState([]);
+  const [shoes, setShoes] = useState([]);
 
   useEffect(() => {
     const fetch = async (type, setter) => {
@@ -47,6 +48,7 @@ function Home() {
     fetch('jacket', setJackets);
     fetch('dresses', setDresses);
     fetch('skirts', setSkirts);
+    fetch('shoes', setShoes);
   }, []);
 
   const settings = {
@@ -83,6 +85,7 @@ function Home() {
       <Section title="Jackets" items={jackets} />
       <Section title="Dresses" items={dresses} />
       <Section title="Skirts" items={skirts} />
+      <Section title="Shoes" items={shoes} />
     </div>
   );
 }
