@@ -34,3 +34,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@media (max-width: 640px) {
+  .image {
+    aspect-ratio: unset;
+    height: 60vw;
+  }
+
+  .content h3 {
+    font-size: 1rem;
+  }
+}
