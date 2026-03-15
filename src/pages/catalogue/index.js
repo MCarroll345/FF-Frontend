@@ -9,7 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 const ArrowBtn = ({ onClick, direction }) => (
   <button onClick={onClick} style={{
     position: 'absolute',
-    [direction === 'left' ? 'left' : 'right']: '-1.5rem',
+    [direction === 'left' ? 'left' : 'right']: '0',
     top: '50%',
     transform: 'translateY(-50%)',
     zIndex: 10,
@@ -60,15 +60,16 @@ function Home() {
     prevArrow: <ArrowBtn direction="left" />,
     nextArrow: <ArrowBtn direction="right" />,
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 640,  settings: { slidesToShow: 2 } },
+      { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+      { breakpoint: 640,  settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 400,  settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
 
   const Section = ({ title, items }) => (
     <div style={{ marginBottom: '3rem' }}>
       <h2 style={{ color: '#7a3d7a', marginBottom: '1rem' }}>{title}</h2>
-      <div style={{ position: 'relative', padding: '0 1.5rem' }}>
+      <div style={{ position: 'relative', padding: '0 2.5rem' }}>
         <Slider {...settings}>
           {items.map((post) => (
             <ImageProfile key={post.id} id={post.id} img_url={post.img_url} name={post.name} brand={post.brand} />
@@ -79,7 +80,7 @@ function Home() {
   );
 
   return (
-    <div style={{ padding: '2rem 3rem' }}>
+    <div style={{ padding: '2rem clamp(1rem, 4vw, 3rem)' }}>
       <Section title="Shirts" items={shirts} />
       <Section title="Trousers" items={trousers} />
       <Section title="Jackets" items={jackets} />
