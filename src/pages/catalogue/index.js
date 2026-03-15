@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
-import classes from '../../components/layout/Home.module.css'
 import ImageProfile from '../../components/layout/ImageProfile';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -30,6 +29,33 @@ const ArrowBtn = ({ onClick, direction }) => (
   </button>
 );
 
+const settings = {
+  infinite: true,
+  dots: false,
+  slidesToShow: 5,
+  slidesToScroll: 2,
+  lazyLoad: true,
+  prevArrow: <ArrowBtn direction="left" />,
+  nextArrow: <ArrowBtn direction="right" />,
+  responsive: [
+    { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+    { breakpoint: 640,  settings: { slidesToShow: 1, slidesToScroll: 1 } },
+  ],
+};
+
+const Section = ({ title, items }) => (
+  <div style={{ marginBottom: '3rem' }}>
+    <h2 style={{ color: '#7a3d7a', marginBottom: '1rem' }}>{title}</h2>
+    <div style={{ position: 'relative', padding: '0 2.5rem' }}>
+      <Slider {...settings}>
+        {items.map((post) => (
+          <ImageProfile key={post.id} id={post.id} img_url={post.img_url} name={post.name} brand={post.brand} />
+        ))}
+      </Slider>
+    </div>
+  </div>
+);
+
 function Home() {
   const [shirts, setShirts] = useState([]);
   const [trousers, setTrousers] = useState([]);
@@ -50,33 +76,6 @@ function Home() {
     fetch('skirts', setSkirts);
     fetch('shoes', setShoes);
   }, []);
-
-  const settings = {
-    infinite: true,
-    dots: false,
-    slidesToShow: 5,
-    slidesToScroll: 2,
-    lazyLoad: true,
-    prevArrow: <ArrowBtn direction="left" />,
-    nextArrow: <ArrowBtn direction="right" />,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 1 } },
-      { breakpoint: 640,  settings: { slidesToShow: 1, slidesToScroll: 1 } },
-    ],
-  };
-
-  const Section = ({ title, items }) => (
-    <div style={{ marginBottom: '3rem' }}>
-      <h2 style={{ color: '#7a3d7a', marginBottom: '1rem' }}>{title}</h2>
-      <div style={{ position: 'relative', padding: '0 2.5rem' }}>
-        <Slider {...settings}>
-          {items.map((post) => (
-            <ImageProfile key={post.id} id={post.id} img_url={post.img_url} name={post.name} brand={post.brand} />
-          ))}
-        </Slider>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ padding: '2rem clamp(1rem, 4vw, 3rem)' }}>
