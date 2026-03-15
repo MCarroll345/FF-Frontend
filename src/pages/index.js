@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import GlobalContext from "./store/globalContext";
 import axios from 'axios';
 
-const CATEGORIES = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts'];
+const CATEGORIES = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts', 'shoes'];
 
 function MarqueeRow({ items, reverse }) {
     if (!items.length) return null;
@@ -55,7 +55,7 @@ function HomePage() {
                 }
             `}</style>
 
-            <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', height: '100vh', overflow: 'hidden', margin: '0 calc(-1 * ((100vw - 100%) / 2))', marginTop: '-3rem', width: '100vw' }}>
                 {/* Blurred scrolling background */}
                 <div style={{ position: 'absolute', inset: 0, filter: 'blur(6px)', transform: 'scale(1.05)', pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     {CATEGORIES.map((cat, i) => (
