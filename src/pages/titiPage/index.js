@@ -25,7 +25,7 @@ const ATTRIBUTE_FIELDS = [
   'layerable',
 ];
 
-const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts'];
+const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts', 'shoes'];
 
 const INITIAL_FORM = ATTRIBUTE_FIELDS.reduce(
   (form, field) => ({ ...form, [field]: '' }),
