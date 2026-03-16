@@ -8,5 +8,9 @@
       "source": "/clothes/:path*",
       "destination": "http://a13c5d6ef6f1b49318a66c2b5adce0bc-732796914.eu-west-1.elb.amazonaws.com/:path*"
     }
+    {
+      "source": "/user/:path*",
+      "destination": "http://a13c5d6ef6f1b49318a66c2b5adce0bc-732796914.eu-west-1.elb.amazonaws.com/:path*"
+    }
   ]
 }

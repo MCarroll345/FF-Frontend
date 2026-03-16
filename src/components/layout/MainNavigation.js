@@ -32,7 +32,7 @@ function MainNavigation() {
             <button className={classes.logoutBtn} onClick={globalCtx.logout}>Logout</button>
           </>
         ) : (
-          <Link href='/auth/login' className={classes.loginLink}>Log In</Link>
+          <Link href='auth/login' className={classes.loginLink}>Log In</Link>
         )}
       </div>
       <button className={classes.hamburger} onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
