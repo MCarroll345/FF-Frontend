@@ -1,73 +1,50 @@
 import { useState } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
-import classes from '../../../styles/auth.module.css';
-
-const MIN_ATTR = 4;
-
-function normalizeImageSrc(value) {
-  if (typeof value !== 'string') {
-    return '';
-  }
-  return value.trim().replace(/^['"]+|['"]+$/g, '');
-}
+import classes from '../../../styles/login.module.css';
 
 function LoginPage() {
-  const [recommend, setRecommend] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
-
-  const aws_recom = process.env.NEXT_PUBLIC_RECOM_AWS;
-
-  const handleOptionToggle = (option) => {
-    setSelectedOptions((previousSelections) => {
-      if (previousSelections.includes(option)) {
-        return previousSelections.filter((item) => item !== option);
-      }
-
-      if (previousSelections.length >= MIN_ATTR) {
-        return previousSelections;
-      }
-
-      return [...previousSelections, option];
-    });
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const login = async () => {
     try {
-      const response = await axios.post('user/login', {
-        
-      });
+      await axios.post('/backend/login', { email, password });
     } catch (error) {
-      console.error('Error login in:', error);
+      console.error('Error logging in:', error);
       alert(error.response?.data?.detail || 'Network error logging in');
     }
   };
 
-  const recommendationItems = [1, 2, 3, 4]
-    .map((index) => {
-      const name = recommend?.[`name${index}`];
-      const image = normalizeImageSrc(
-        recommend?.[`image${index}`]
-        || recommend?.[`img_url${index}`]
-        || recommend?.[`img${index}`]
-        || recommend?.[`url${index}`]
-      );
-
-      if (!name && !image) {
-        return null;
-      }
-
-      return {
-        id: index,
-        name: name || `Look ${index}`,
-        image,
-      };
-    })
-    .filter(Boolean);
-
   return (
     <div className={classes.container}>
-      <h1>Login Page</h1>
-      
+      <div className={classes.card}>
+        <h1>Login</h1>
+        <div className={classes.field}>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className={classes.field}>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button className={classes.btn} onClick={login}>Login</button>
+        <p className={classes.registerLink}>
+          Don&apos;t have an account? <Link href="/auth/register">Register</Link>
+        </p>
+      </div>
     </div>
   );
 }
