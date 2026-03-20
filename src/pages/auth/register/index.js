@@ -11,7 +11,7 @@ function RegisterPage() {
 
   const register = async () => {
     try {
-      await axios.post('backend/users', {
+      await axios.post('/backend/users', {
           email,
           password,
           first_name: firstName,
