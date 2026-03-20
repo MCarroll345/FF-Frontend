@@ -2,17 +2,29 @@ import { useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import classes from '../../../styles/login.module.css';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+
+  const router = useRouter();
+
+  const setUserCookie = (user) => {
+    Cookies.set('user_id', user);
+  }
 
   const login = async () => {
+    setError(null);
     try {
-      await axios.post('/backend/login', { email, password });
-    } catch (error) {
-      console.error('Error logging in:', error);
-      alert(error.response?.data?.detail || 'Network error logging in');
+      const resp = await axios.post('/backend/login', { email, password });
+      setUserCookie(resp.data.id);
+      alert(`Welcome, ${resp.data.first_name}!`);
+      router.push('/');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Invalid email or password.');
     }
   };
 
@@ -41,8 +53,9 @@ function LoginPage() {
           />
         </div>
         <button className={classes.btn} onClick={login}>Login</button>
+        {error && <p className={classes.error}>{error}</p>}
         <p className={classes.registerLink}>
-          Don&apos;t have an account? <Link href="/auth/register">Register</Link>
+          Don't have an account? <Link href="/auth/register">Register</Link>
         </p>
       </div>
     </div>
