@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from 'next/router';
-import GlobalContext from "./store/globalContext";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
