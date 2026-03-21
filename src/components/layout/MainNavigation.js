@@ -1,7 +1,6 @@
 import classes from './MainNavigation.module.css'
 import Link from 'next/link'
 import { useContext, useState, useEffect } from 'react'
-import GlobalContext from "../../pages/store/globalContext"
 import { useRouter } from 'next/router'
 import Cookies from "js-cookie";
 
