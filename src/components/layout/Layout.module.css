@@ -1,5 +1,5 @@
 .main {
-  margin: 3rem auto;
-  width: min(96%, 96rem);
-  padding: 0 1rem;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
-import styles from './user.module.css';
+import styles from '../../styles/user.module.css';
 
 function UserPage() {
   const [user, setUser] = useState(null);
