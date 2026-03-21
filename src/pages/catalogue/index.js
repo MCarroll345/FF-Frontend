@@ -43,8 +43,8 @@ const settings = {
   ],
 };
 
-const Section = ({ title, items }) => (
-  <div style={{ marginBottom: '3rem' }}>
+const Section = ({ title, items, last }) => (
+  <div style={{ marginBottom: last ? 0 : '3rem' }}>
     <h2 style={{ color: '#7a3d7a', marginBottom: '1rem' }}>{title}</h2>
     <div style={{ position: 'relative', padding: '0 2.5rem' }}>
       <Slider {...settings}>
@@ -78,13 +78,13 @@ function Home() {
   }, []);
 
   return (
-    <div style={{ padding: '2rem clamp(1rem, 4vw, 3rem)' }}>
+    <div style={{ padding: '2rem clamp(1rem, 4vw, 3rem) 0' }}>
       <Section title="Shirts" items={shirts} />
       <Section title="Trousers" items={trousers} />
       <Section title="Jackets" items={jackets} />
       <Section title="Dresses" items={dresses} />
       <Section title="Skirts" items={skirts} />
-      <Section title="Shoes" items={shoes} />
+      <Section title="Shoes" items={shoes} last />
     </div>
   );
 }

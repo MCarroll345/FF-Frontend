@@ -8,7 +8,8 @@
   box-shadow: 0 2px 12px rgba(180, 80, 180, 0.12);
   padding: 0 5%;
   color: #7a3d7a;
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 100;
 }
 
