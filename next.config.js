@@ -7,6 +7,10 @@ const nextConfig = {
         source: '/backend/:path*',
         destination: 'http://localhost:8003/:path*',
       },
+      {
+        source: '/clothes/:path*',
+        destination: 'http://localhost:8002/:path*',
+      },
     ];
   },
 };

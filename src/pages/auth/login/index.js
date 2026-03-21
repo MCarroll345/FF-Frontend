@@ -19,9 +19,8 @@ function LoginPage() {
   const login = async () => {
     setError(null);
     try {
-      const resp = await axios.post('/backend/login', { email, password });
+      const resp = await axios.post('/user/login', { email, password });
       setUserCookie(resp.data.id);
-      alert(`Welcome, ${resp.data.first_name}!`);
       router.push('/');
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid email or password.');

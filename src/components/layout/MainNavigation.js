@@ -1,14 +1,22 @@
 import classes from './MainNavigation.module.css'
 import Link from 'next/link'
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import GlobalContext from "../../pages/store/globalContext"
 import { useRouter } from 'next/router'
+import Cookies from "js-cookie";
 
 function MainNavigation() {
-  const globalCtx = useContext(GlobalContext)
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [userId, setUserId] = useState(null)
 
+  useEffect(() => {
+    const checkCookie = () => setUserId(Cookies.get('user_id') || null);
+    checkCookie();
+    router.events.on('routeChangeComplete', checkCookie);
+    return () => router.events.off('routeChangeComplete', checkCookie);
+  }, [router.events]);
+  
   return (
     <header className={classes.header}>
       <div className={classes.leftSection}>
@@ -26,11 +34,8 @@ function MainNavigation() {
         </ul>
       </nav>
       <div className={classes.userSection}>
-        {globalCtx.theGlobalObject.username ? (
-          <>
-            <span className={classes.username}>{globalCtx.theGlobalObject.username}</span>
-            <button className={classes.logoutBtn} onClick={globalCtx.logout}>Logout</button>
-          </>
+        {userId ? (
+          <Link href='/user' className={classes.loginLink}>Your Profile</Link>
         ) : (
           <Link href='/auth/login' className={classes.loginLink}>Log In</Link>
         )}

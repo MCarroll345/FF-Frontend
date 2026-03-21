@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import classes from '../../../styles/register.module.css';
+import Cookies from 'js-cookie';
 
 function RegisterPage() {
   const [firstName, setFirstName] = useState('');
@@ -9,14 +10,19 @@ function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const setUserCookie = (user) => {
+      Cookies.set('user_id', user);
+    }
+
   const register = async () => {
     try {
-      await axios.post('/backend/users', {
+      const resp = await axios.post('/user/users', {
           email,
           password,
           first_name: firstName,
           last_name: lastName
         })
+      setUserCookie(resp.data.id);
     } catch (error) {
       console.error('Error registering:', error);
       alert(error.response?.data?.detail || 'Network error registering');
