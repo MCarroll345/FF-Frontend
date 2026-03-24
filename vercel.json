@@ -2,15 +2,15 @@
   "rewrites": [
     {
       "source": "/recom/:path*",
-      "destination": "http://a75c5f31515814f0f9562c0e339ed37e-277508909.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://ac384e428633f47daaae7fc451ae73dc-942258429.eu-west-1.elb.amazonaws.com/:path*"
     },
     {
       "source": "/clothes/:path*",
-      "destination": "http://a467325d256b9444a890beb901ea51b4-1475588834.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://ada04054709e940ffac3a7dfd112069f-1051711300.eu-west-1.elb.amazonaws.com/:path*"
     },
     {
       "source": "/user/:path*",
-      "destination": "http://a547386e378a24de2a617d76462e1b1e-77947973.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://a74f5582ae3cd4dc39f45cd8c63075b8-1765814051.eu-west-1.elb.amazonaws.com/:path*"
     }
   ]
 }
