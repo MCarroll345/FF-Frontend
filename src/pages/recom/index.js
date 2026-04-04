@@ -42,6 +42,10 @@ function RecomPage() {
   };
 
   const like = async () => {
+    if (!Cookies.get('user_id')) {
+      alert('Please sign in to like outfits.');
+      return;
+    }
     try {
       await axios.post('/user/likes', {
         uid: Cookies.get('user_id'),
@@ -49,6 +53,16 @@ function RecomPage() {
         item_id2: recommend?.id2,
         item_id3: recommend?.id3,
         item_id4: recommend?.id4,
+      });
+      await axios.post('/recom/like', {
+        id1: recommend?.id1,
+        id2: recommend?.id2,
+        id3: recommend?.id3,
+        id4: recommend?.id4,
+        attr1: formality,
+        attr2: temperature,
+        attr3: colour,
+        attr4: style,
       });
       alert('Outfit liked!');
     } catch (error) {
