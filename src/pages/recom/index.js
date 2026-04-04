@@ -74,10 +74,10 @@ function RecomPage() {
   const dislike = async () => {
     try {
       await axios.post('/recom/dislike', {
-        item_id1: recommend?.id1,
-        item_id2: recommend?.id2,
-        item_id3: recommend?.id3,
-        item_id4: recommend?.id4,
+        id1: recommend?.id1,
+        id2: recommend?.id2,
+        id3: recommend?.id3,
+        id4: recommend?.id4,
         attr1: formality,
         attr2: temperature,
         attr3: colour,
