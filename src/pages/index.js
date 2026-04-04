@@ -41,7 +41,7 @@ function HomePage() {
 
     useEffect(() => {
         CATEGORIES.forEach(cat => {
-            axios.get(`/recom/${cat}/get`)
+            axios.get(`/clothes/${cat}/get`)
                 .then(({ data }) => setCatalogue(prev => ({ ...prev, [cat]: data })))
                 .catch(() => setCatalogue(prev => ({ ...prev, [cat]: [] })));
         });

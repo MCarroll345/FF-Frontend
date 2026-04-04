@@ -7,6 +7,7 @@ import styles from '../../styles/user.module.css';
 function UserPage() {
   const [user, setUser] = useState(null);
   const [likeSets, setLikeSets] = useState([]);
+  const [likesLoading, setLikesLoading] = useState(true);
   const [generatedImages, setGeneratedImages] = useState({});
   const [lightboxSrc, setLightboxSrc] = useState(null);
   const [generatingIndex, setGeneratingIndex] = useState(null);
@@ -33,19 +34,26 @@ function UserPage() {
     axios.get(`/user/likes/${user_id}`)
       .then(({ data }) => {
         console.log('likes:', data);
-        return Promise.all(
-          data.map(set => {
-            const ids = Object.entries(set)
-              .filter(([key]) => key.startsWith('item_id'))
-              .map(([, val]) => val)
-              .filter(Boolean);
-            return Promise.all(ids.map(id => axios.get(`/clothes/geto/${id}`).then(r => r.data)))
-              .then(items => ({ items, rawIds: ids, lid: set.id }));
-          })
-        );
+        const sets = data.map(set => {
+          const ids = Object.entries(set)
+            .filter(([key]) => key.startsWith('item_id'))
+            .map(([, val]) => val)
+            .filter(Boolean);
+          return { items: [], rawIds: ids, lid: set.id, loading: true };
+        });
+        setLikeSets(sets);
+        sets.forEach((set, i) => {
+          Promise.all(set.rawIds.map(id => axios.get(`/clothes/geto/${id}`).then(r => r.data)))
+            .then(items => {
+              setLikeSets(prev => prev.map((s, idx) => idx === i ? { ...s, items, loading: false } : s));
+            })
+            .catch(() => {
+              setLikeSets(prev => prev.map((s, idx) => idx === i ? { ...s, loading: false } : s));
+            });
+        });
       })
-      .then(sets => setLikeSets(sets))
-      .catch((e) => { console.error('likes error:', e); setLikeSets([]); });
+      .catch((e) => { console.error('likes error:', e); })
+      .finally(() => setLikesLoading(false));
   }, []);
 
   const edit = async () => {
@@ -183,7 +191,9 @@ function UserPage() {
       {/* Liked Sets */}
       <div className={styles.card}>
         <h2 className={styles.title}>Liked Outfits</h2>
-        {likeSets.length === 0 ? (
+        {likesLoading ? (
+          <div className={styles.spinner} style={{ margin: '1rem auto' }} />
+        ) : likeSets.length === 0 ? (
           <p className={styles.empty}>No liked outfits yet.</p>
         ) : (
           <div className={styles.setsList}>
@@ -193,6 +203,9 @@ function UserPage() {
                   <p className={styles.outfitLabel}>Outfit {i + 1}</p>
                   <button onClick={() => deleteLike(set.lid, i)} className={styles.deleteLikeBtn}>🗑</button>
                 </div>
+                {set.loading ? (
+                  <div className={styles.spinner} style={{ margin: '1rem auto' }} />
+                ) : (
                 <div className={styles.outfitGrid}>
                   {set.items.map((item) => (
                     <div key={item.id} className={styles.itemCard}>
@@ -218,6 +231,7 @@ function UserPage() {
                     <button onClick={() => generate(set.rawIds, i)} className={styles.generateBtn}>✨ Generate</button>
                   )}
                 </div>
+                )}
               </div>
             ))}
           </div>
