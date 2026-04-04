@@ -227,8 +227,10 @@ function UserPage() {
                     <div className={styles.generateBtn}>
                       <div className={styles.spinner} />
                     </div>
-                  ) : (
+                  ) : user.img_status ? (
                     <button onClick={() => generate(set.rawIds, i)} className={styles.generateBtn}>✨ Generate</button>
+                  ) : (
+                    <div className={styles.generateBtn} style={{ fontSize: '0.8rem', padding: '0.5rem', textAlign: 'center' }}>Please upload a photo to see the outfit</div>
                   )}
                 </div>
                 )}
