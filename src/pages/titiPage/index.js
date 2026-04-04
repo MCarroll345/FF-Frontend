@@ -8,6 +8,7 @@ const ATTRIBUTE_FIELDS = [
   'dark',
   'colourful',
   'warm',
+  'bright',
   'cool',
   'fancy',
   'casual',

@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 
 const FORMALITY_OPTIONS = ['fancy', 'casual', 'business', 'evening'];
 const TEMPERATURE_OPTIONS = ['warm', 'cool', 'light'];
-const COLOUR_OPTIONS = ['light', 'dark', 'colourful'];
+const COLOUR_OPTIONS = ['bright', 'dark', 'colourful'];
 const STYLE_OPTIONS = ['minimalist', 'vintage', 'modern', 'floral'];
 
 function normalizeImageSrc(value) {

@@ -66,7 +66,7 @@ function Home() {
 
   useEffect(() => {
     const fetch = async (type, setter) => {
-      try { const { data } = await axios.get(`/recom/${type}/get`); setter(data); }
+      try { const { data } = await axios.get(`/clothes/${type}/get`); setter(data); }
       catch (e) { setter([]); }
     };
     fetch('shirts', setShirts);
