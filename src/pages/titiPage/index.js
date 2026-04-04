@@ -6,23 +6,18 @@ import classes from '../../styles/titiPage.module.css';
 const ATTRIBUTE_FIELDS = [
   'light',
   'dark',
-  'bright',
+  'colourful',
   'warm',
   'cool',
-  'breathable',
-  'cozy',
-  'lightweight',
+  'light',
   'fancy',
   'casual',
   'business',
-  'lounge',
   'evening',
   'minimalist',
   'vintage',
   'modern',
-  'soft',
-  'comfortable',
-  'layerable',
+  'floral',
 ];
 
 const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts', 'shoes'];

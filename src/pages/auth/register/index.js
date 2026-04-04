@@ -3,12 +3,15 @@ import Link from 'next/link';
 import axios from 'axios';
 import classes from '../../../styles/register.module.css';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 function RegisterPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const router = useRouter();
 
   const setUserCookie = (user) => {
       Cookies.set('user_id', user);
@@ -23,6 +26,7 @@ function RegisterPage() {
           last_name: lastName
         })
       setUserCookie(resp.data.id);
+      router.push('/');
     } catch (error) {
       console.error('Error registering:', error);
       alert(error.response?.data?.detail || 'Network error registering');
