@@ -1,28 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 import classes from '../../styles/recom.module.css';
+import Cookies from 'js-cookie';
 
-const ATTR_LIST = [
-  'light',
-  'dark',
-  'bright',
-  'warm',
-  'cool',
-  'lightweight',
-  'fancy',
-  'casual',
-  'business',
-  'lounge',
-  'evening',
-  'minimalist',
-  'vintage',
-  'modern',
-  'soft',
-  'comfortable',
-  'layerable',
-];
-
-const MIN_ATTR = 4;
+const FORMALITY_OPTIONS = ['fancy', 'casual', 'business', 'evening'];
+const TEMPERATURE_OPTIONS = ['warm', 'cool', 'light'];
+const COLOUR_OPTIONS = ['light', 'dark', 'colourful'];
+const STYLE_OPTIONS = ['minimalist', 'vintage', 'modern', 'floral'];
 
 function normalizeImageSrc(value) {
   if (typeof value !== 'string') {
@@ -33,39 +17,62 @@ function normalizeImageSrc(value) {
 
 function RecomPage() {
   const [recommend, setRecommend] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [formality, setFormality] = useState('');
+  const [temperature, setTemperature] = useState('');
+  const [colour, setColour] = useState('');
+  const [style, setStyle] = useState('');
 
-  const aws_recom = process.env.NEXT_PUBLIC_RECOM_AWS;
-
-  const handleOptionToggle = (option) => {
-    setSelectedOptions((previousSelections) => {
-      if (previousSelections.includes(option)) {
-        return previousSelections.filter((item) => item !== option);
-      }
-
-      if (previousSelections.length >= MIN_ATTR) {
-        return previousSelections;
-      }
-
-      return [...previousSelections, option];
-    });
-  };
+  const isReady = formality && temperature && colour && style;
 
   const getRecommendations = async () => {
-    if (selectedOptions.length !== MIN_ATTR) {
-      alert(`Please choose exactly ${MIN_ATTR} options before getting recommendations.`);
+    if (!isReady) {
+      alert('Please select an option from each dropdown.');
       return;
     }
 
-    const [c1, c2, c3, c4] = selectedOptions.map((option) => encodeURIComponent(option));
+    const [c1, c2, c3, c4] = [formality, temperature, colour, style].map(encodeURIComponent);
 
     try {
       const { data } = await axios.get(`/recom/${c1}/${c2}/${c3}/${c4}/getrecom`);
-
       setRecommend(data);
     } catch (error) {
       console.error('Error getting recommendations:', error);
       alert(error.response?.data?.detail || 'Network error getting recommendations');
+    }
+  };
+
+  const like = async () => {
+    try {
+      await axios.post('/user/likes', {
+        uid: Cookies.get('user_id'),
+        item_id1: recommend?.id1,
+        item_id2: recommend?.id2,
+        item_id3: recommend?.id3,
+        item_id4: recommend?.id4,
+      });
+      alert('Outfit liked!');
+    } catch (error) {
+      console.error('Error liking outfit:', error);
+      alert(error.response?.data?.detail || 'Network error liking outfit');
+    }
+  };
+
+  const dislike = async () => {
+    try {
+      await axios.post('/recom/dislike', {
+        item_id1: recommend?.id1,
+        item_id2: recommend?.id2,
+        item_id3: recommend?.id3,
+        item_id4: recommend?.id4,
+        attr1: formality,
+        attr2: temperature,
+        attr3: colour,
+        attr4: style,
+      });
+      getRecommendations();
+    } catch (error) {
+      console.error('Error disliking outfit:', error);
+      alert(error.response?.data?.detail || 'Network error disliking outfit');
     }
   };
 
@@ -93,49 +100,43 @@ function RecomPage() {
 
   return (
     <div className={classes.container}>
-      <h1>Outfit Ideas</h1>
-      <p className={classes.selectionCount}>
-        Choose up to {MIN_ATTR} options. Selected: {selectedOptions.length}/{MIN_ATTR}
-      </p>
-
-      <div className={classes.checklistGrid}>
-        {ATTR_LIST.map((option) => {
-          const isChecked = selectedOptions.includes(option);
-          const disableUnchecked = !isChecked && selectedOptions.length >= MIN_ATTR;
-
-          return (
-            <label
-              key={option}
-              className={`${classes.checklistCard} ${isChecked ? classes.checkedCard : ''} ${disableUnchecked ? classes.disabledCard : ''}`}
-            >
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={() => handleOptionToggle(option)}
-                disabled={disableUnchecked}
-              />
-              <span>{option}</span>
-            </label>
-          );
-        })}
+      <h1>Find your perfect outfit</h1>
+      <div className={classes.dropdownRow}>
+        {[
+          { label: 'Formality', options: FORMALITY_OPTIONS, value: formality, set: setFormality },
+          { label: 'Temperature', options: TEMPERATURE_OPTIONS, value: temperature, set: setTemperature },
+          { label: 'Colour', options: COLOUR_OPTIONS, value: colour, set: setColour },
+          { label: 'Style', options: STYLE_OPTIONS, value: style, set: setStyle },
+        ].map(({ label, options, value, set }) => (
+          <div key={label} className={classes.dropdownCard}>
+            <span className={classes.dropdownLabel}>{label}</span>
+            <div className={classes.pillGroup}>
+              {options.map((o) => (
+                <button
+                  key={o}
+                  type="button"
+                  className={`${classes.pill} ${value === o ? classes.pillActive : ''}`}
+                  onClick={() => set(o)}
+                >
+                  {o}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <h2>Your Recommendations</h2>
-
-      <button
-        onClick={getRecommendations}
-        className={classes.deleteBtn}
-        disabled={selectedOptions.length !== MIN_ATTR}
-      >
-        Get Recommendations
-      </button>
+      <div style={{ textAlign: 'center' }}>
+        <button
+          onClick={getRecommendations}
+          className={classes.deleteBtn}
+          disabled={!isReady}
+        >
+          Get Recommendations
+        </button>
+      </div>
 
       <div className={classes.resultsSection}>
-        <p className={classes.resultsIntro}>
-          {recommendationItems.length > 0
-            ? 'Here is your recommended outfit combination.'
-            : 'Choose 4 options and fetch recommendations to see an outfit here.'}
-        </p>
 
         <div className={classes.recommendationGrid}>
           {recommendationItems.map((item) => (
@@ -159,6 +160,13 @@ function RecomPage() {
             </article>
           ))}
         </div>
+
+        {recommendationItems.length > 0 && (
+          <div className={classes.likeRow}>
+            <button onClick={like} className={classes.likeBtn}>👍</button>
+            <button onClick={dislike} className={classes.dislikeBtn}>👎</button>
+          </div>
+        )}
       </div>
     </div>
   );

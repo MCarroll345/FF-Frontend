@@ -4,13 +4,17 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/backend/:path*',
-        destination: 'http://localhost:8003/:path*',
+        source: '/recom/:path*',
+        destination: 'http://localhost:8000/:path*'
       },
       {
         source: '/clothes/:path*',
-        destination: 'http://localhost:8002/:path*',
+        destination: 'http://localhost:8001/:path*'
       },
+      {
+        source: '/user/:path*',
+        destination: 'http://localhost:8003/:path*'
+      }
     ];
   },
 };
