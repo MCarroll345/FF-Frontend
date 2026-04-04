@@ -9,7 +9,6 @@ const ATTRIBUTE_FIELDS = [
   'colourful',
   'warm',
   'cool',
-  'light',
   'fancy',
   'casual',
   'business',
