@@ -20,7 +20,7 @@ const ATTRIBUTE_FIELDS = [
   'floral',
 ];
 
-const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'dresses', 'skirts', 'shoes'];
+const CLOTH_OPTIONS = ['shirts', 'trousers', 'jacket', 'skirts', 'shoes'];
 
 const INITIAL_FORM = ATTRIBUTE_FIELDS.reduce(
   (form, field) => ({ ...form, [field]: '' }),
