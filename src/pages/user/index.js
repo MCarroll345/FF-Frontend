@@ -174,6 +174,7 @@ function UserPage() {
         </div>
         <div className={styles.uploadSection}>
           <span className={styles.fieldLabel}>Profile Image</span>
+          <p className={styles.aiWarning}>⚠️ Please note that the image you upload will be used by AI.</p>
           {user.img_status ? (
             <button onClick={deleteImage} className={styles.deleteBtn}>Delete Image</button>
           ) : (

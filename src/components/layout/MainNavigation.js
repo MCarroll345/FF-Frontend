@@ -29,7 +29,6 @@ function MainNavigation() {
           <li><Link href='/' onClick={() => setMenuOpen(false)}>Home</Link></li>
           <li><Link href='/recom' onClick={() => setMenuOpen(false)}>Outfit Ideas</Link></li>
           <li><Link href='/catalogue' onClick={() => setMenuOpen(false)}>Catalogue</Link></li>
-          <li><Link href='/titiPage' onClick={() => setMenuOpen(false)}>Titi</Link></li>
         </ul>
       </nav>
       <div className={classes.userSection}>
