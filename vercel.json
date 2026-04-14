@@ -10,7 +10,7 @@
     },
     {
       "source": "/user/:path*",
-      "destination": "http://af9b8c24585f74724be06af4ea86fd31-976708729.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://a6adf3bc844184066a796181cfe863ca-1431027186.eu-west-1.elb.amazonaws.com/:path*"
     }
   ]
 }
