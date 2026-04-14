@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/recom/:path*",
-      "destination": "http://a2903d1e8947444fc9ea53de1fbe0c65-1777050325.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://ab99c611790f649fa8c2621c6905f97e-1148986346.eu-west-1.elb.amazonaws.com/:path*"
     },
     {
       "source": "/clothes/:path*",
-      "destination": "http://abc08cdaddb974a7e8cf91ff5e1b8cc4-937482522.eu-west-1.elb.amazonaws.com/:path*"
+      "destination": "http://a51d3b00675ca4d0bbb6debb1cc7a36c-1918390413.eu-west-1.elb.amazonaws.com/:path*"
     },
     {
       "source": "/user/:path*",
